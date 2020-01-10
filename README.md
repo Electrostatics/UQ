@@ -44,39 +44,35 @@ The steps below provide a brief overview of the DSRAR procedure. For details and
 1. Collect atomic trajectory from molecular dynamics (MD) simulation using MD engine of choice.
 2. Using the data collected in Step 1, pre-process trajectory using principal component analysis (PCA). This is the sample set, and a subset of this will be the training set.
 The following files are generated:
-   -	principal components
-   -	x, y, and z coordinate inputs in compatible format for APBS
+   - principal components
+   - x, y, and z coordinate inputs in compatible format for APBS
 3. Using the x, y, and z coordinates computed in Step 2, run APBS to evaluate quantity of interest (solvation energy) on training samples.
 The following files are generated:
-   -	solvation energy of training samples
+   - solvation energy of training samples
 4. Using the principal components generated in Step 2, create the orthonormal basis for the surrogate model. 
 The following files are generated:
-   -	orthonormal polynomial basis
-   -	measurement matrix 
-5. Using the following:
-   -	trajectory collected in Step 2
-   -	solvation energy of samples computed in Step 3
-   -	orthonormal polynomial basis and measurement matrix computed in Step 4
-
-evaluate the measurement matrix and solve for the surrogate model coefficients.
-The following files are generated:
-   -	surrogate model
-
-Note: We use the [SPGL1](https://www.cs.ubc.ca/~mpf/spgl1/) solver to solve for the model coefficients. 
-6. Using the following:
-   -	trajectory collected in Step 2
-   -	orthonormal polynomial basis computed in Step 4
-   -	surrogate model computed in Step 5
-
-calculate the gradient matrix to perform sparsity-enhancing rotation.
-The following files are generated:
-   -	gradient matrix
-   -	rotated training set
+   - orthonormal polynomial basis
+   - measurement matrix 
+5. Using the following to evaluate the measurement matrix and solve for the surrogate model coefficients:
+   - trajectory collected in Step 2
+   - solvation energy of samples computed in Step 3
+   - orthonormal polynomial basis and measurement matrix computed in Step 4
+   - the following files are generated:
+      - surrogate model
+   - Note: We use the [SPGL1](https://www.cs.ubc.ca/~mpf/spgl1/) solver to solve for the model coefficients. 
+6. Using the following to calculate the gradient matrix to perform sparsity-enhancing rotation:
+   - trajectory collected in Step 2
+   - orthonormal polynomial basis computed in Step 4
+   - surrogate model computed in Step 5
+   - the following files are generated:
+      - gradient matrix
+      -	rotated training set
 7. Repeat Steps 4 - 5 with the rotated training set to reconstruct the orthonormal basis and surrogate model. This step is necessary when the underlying distribution is non-Gaussian.
 
 ### Alanine Dipeptide Example
 We present a numerical example applying the DSRAR framework for UQ for the solvation energy of a small molecule (alanine dipeptide) with respect to thermally driven conformational fluctuations sampled from an MD simulation. 
 ![Molecular structure of alanine dipeptide](MD.png)
+
 Pre-processing random inputs via PCA shows that its underlying distribution is non-Gaussian.  Sampling points representing the joint probability distributions along the first three principal components are shown below.
 
 ![Joint probability distributions alone the first three principal components](PrincComp-JointDist.png)
