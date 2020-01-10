@@ -26,10 +26,10 @@ For a description of the flags and options enter:
 `python dsrar.py --help`
 
 ## Discussion of UQ tools for APBS
-The UQ tools are based off of the Data-driven Sparsity-enhancing Rotation for Arbitrary Randomness (DSRAR) framework developed by [Lei 2019] (https://www.sciencedirect.com/science/article/pii/S0045782519301434) DSRAR does not rely on independence between components of the random inputs and therefore is well-suited for complex systems such as biomolecules where the input distributions can be non-Gaussian or analytically unknown. The basic idea involves a data-driven approach for multivariate orthonormal (or near-orthonormal) basis construction, coupled with a rotation-based sparsity enhancement [Yang 2016] (https://www.sciencedirect.com/science/article/pii/S0021999115007780). This sparsity-enhancing rotation method has been applied to structural uncertainty in biomolecule systems [Lei 2015] (https://epubs.siam.org/doi/abs/10.1137/140981587) (i.e., modeling uncertainty represented by the B-factors) as well as parameter uncertainties in solvation energy calculation [Yang 2018] (https://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00905) (e.g., atom radii, charge). 
+The UQ tools are based off of the Data-driven Sparsity-enhancing Rotation for Arbitrary Randomness (DSRAR) framework developed by [Lei 2019](https://www.sciencedirect.com/science/article/pii/S0045782519301434) DSRAR does not rely on independence between components of the random inputs and therefore is well-suited for complex systems such as biomolecules where the input distributions can be non-Gaussian or analytically unknown. The basic idea involves a data-driven approach for multivariate orthonormal (or near-orthonormal) basis construction, coupled with a rotation-based sparsity enhancement [Yang 2016](https://www.sciencedirect.com/science/article/pii/S0021999115007780). This sparsity-enhancing rotation method has been applied to structural uncertainty in biomolecule systems [Lei 2015](https://epubs.siam.org/doi/abs/10.1137/140981587) (i.e., modeling uncertainty represented by the B-factors) as well as parameter uncertainties in solvation energy calculation [Yang 2018](https://pubs.acs.org/doi/abs/10.1021/acs.jctc.7b00905) (e.g., atom radii, charge). 
 
 ### Overview of DSRAR Framework
-The steps below provide a brief overview of the DSRAR procedure. For details and equations, click [Lei 2019] (https://www.sciencedirect.com/science/article/pii/S0045782519301434).
+The steps below provide a brief overview of the DSRAR procedure. For details and equations, click [Lei 2019](https://www.sciencedirect.com/science/article/pii/S0045782519301434).
 
 #### short version
 1. Collect atomic trajectory from molecular dynamics (MD) simulation using MD engine of choice. 
@@ -44,38 +44,39 @@ The steps below provide a brief overview of the DSRAR procedure. For details and
 1. Collect atomic trajectory from molecular dynamics (MD) simulation using MD engine of choice.
 2. Using the data collected in Step 1, pre-process trajectory using principal component analysis (PCA). This is the sample set, and a subset of this will be the training set.
 The following files are generated:
--	principal components
--	x, y, and z coordinate inputs in compatible format for APBS
+   -	principal components
+   -	x, y, and z coordinate inputs in compatible format for APBS
 3. Using the x, y, and z coordinates computed in Step 2, run APBS to evaluate quantity of interest (solvation energy) on training samples.
 The following files are generated:
--	solvation energy of training samples
+   -	solvation energy of training samples
 4. Using the principal components generated in Step 2, create the orthonormal basis for the surrogate model. 
 The following files are generated:
--	orthonormal polynomial basis
--	measurement matrix 
+   -	orthonormal polynomial basis
+   -	measurement matrix 
 5. Using the following:
--	trajectory collected in Step 2
--	solvation energy of samples computed in Step 3
--	orthonormal polynomial basis and measurement matrix computed in Step 4
+   -	trajectory collected in Step 2
+   -	solvation energy of samples computed in Step 3
+   -	orthonormal polynomial basis and measurement matrix computed in Step 4
+
 evaluate the measurement matrix and solve for the surrogate model coefficients.
 The following files are generated:
--	surrogate model
-Note: We use the [SPGL1] (https://www.cs.ubc.ca/~mpf/spgl1/) solver to solve for the model coefficients. 
+   -	surrogate model
+
+Note: We use the [SPGL1](https://www.cs.ubc.ca/~mpf/spgl1/) solver to solve for the model coefficients. 
 6. Using the following:
--	trajectory collected in Step 2
--	orthonormal polynomial basis computed in Step 4
--	surrogate model computed in Step 5
+   -	trajectory collected in Step 2
+   -	orthonormal polynomial basis computed in Step 4
+   -	surrogate model computed in Step 5
+
 calculate the gradient matrix to perform sparsity-enhancing rotation.
 The following files are generated:
--	gradient matrix
--	rotated training set
+   -	gradient matrix
+   -	rotated training set
 7. Repeat Steps 4 - 5 with the rotated training set to reconstruct the orthonormal basis and surrogate model. This step is necessary when the underlying distribution is non-Gaussian.
 
 ### Alanine Dipeptide Example
 We present a numerical example applying the DSRAR framework for UQ for the solvation energy of a small molecule (alanine dipeptide) with respect to thermally driven conformational fluctuations sampled from an MD simulation. 
-
 ![Molecular structure of alanine dipeptide](MD.png)
-
 Pre-processing random inputs via PCA shows that its underlying distribution is non-Gaussian.  Sampling points representing the joint probability distributions along the first three principal components are shown below.
 
 ![Joint probability distributions alone the first three principal components](PrincComp-JointDist.png)
